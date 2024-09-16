@@ -1,4 +1,5 @@
 import MongoCRUD from "../../CRUD/mongo";
+import axios from 'axios'
 
 export default class Order {
     private mongo
@@ -7,7 +8,7 @@ export default class Order {
     }
     public async createOrder(doc:any) {
         const payload = {
-            USER_ID: "USER005",
+            // USER_ID: "USER005",
             STATUS : "Pending",
             ...doc
         }
@@ -16,7 +17,11 @@ export default class Order {
             return acc + obj.TOTAL
         }, 0)
         let menuItem = await this.mongo.save('Order',payload)
-        if (menuItem?.ORDER_ID) return {status:201,data:{status:201,message:'order booked Successfully'}}
+        if (menuItem?.ORDER_ID) {
+            const response = await axios.post(`${process.env.CHEF_SERVICE_URL}/order/placed`, { order_id: menuItem?.ORDER_ID })
+            if(response?.data?.data?.prep_time)  await this.updateOrder({ ORDER_ID: menuItem?.ORDER_ID }, { PREP_TIME: response.data.data.prep_time })
+            return {status:201,data:{status:201,message:'order booked Successfully'}}
+        }
         throw new Error('error while saving data')
     }
     public async getMenuList(doc:any) {
@@ -29,9 +34,9 @@ export default class Order {
         if(response?._doc?.MENU_ID) return {status:200,data:{status: 200,data: (response._doc)}}
         throw new Error('error while getting data')
     }
-    public async updateMenu(filter:any,doc: any) {
-        const response = await this.mongo.findOneAndUpdate('Menu',filter,doc)
-        if (response?._doc?.MENU_ID) return {status:200,data:{status: 200,message:'successfully updated menu'}}
+    public async updateOrder(filter:any,doc: any) {
+        const response = await this.mongo.findOneAndUpdate('Order',filter,doc)
+        if (response?._doc?.ORDER_ID) return {status:200,data:{status: 200,message:'successfully updated menu'}}
         throw new Error('error while updating data')
     }
     public async updateItmsWithPrice(items: any) {

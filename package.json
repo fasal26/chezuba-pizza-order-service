@@ -11,15 +11,16 @@
   "author": "mannil_jaseem",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.7.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "mongoose": "^8.6.0",
     "morgan": "^1.10.0",
+    "nanoid": "^3.0.0",
     "picocolors": "^1.0.1",
     "routing-controllers": "^0.10.4",
-    "zod": "^3.23.8",
-    "nanoid": "^3.0.0"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
