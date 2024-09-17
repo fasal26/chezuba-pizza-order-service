@@ -1,13 +1,10 @@
 import { z } from 'zod';
 
-export const ContactValidation = z.object({
-    email: z.string().email().nullable().optional(),
-    phoneNumber: z.string().min(10).max(10).nullable().optional()
-}).refine(data => {
-    if (!data.email && !data.phoneNumber) {
-        return false;
-    }
-    return true;
-}, {
-    message: 'Either email or phoneNumber must be provided',
+export const OrderItemSchema = z.object({
+    MENU_ID: z.string(),
+    QUANTITY: z.number().min(1, { message: "QUANTITY must be greater than 0" }),
+});
+
+export const OrderPayloadSchema = z.object({
+    ITEMS: z.array(OrderItemSchema),
 });

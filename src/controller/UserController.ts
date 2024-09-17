@@ -3,6 +3,7 @@ import {Controller, Req, Res, Post, UseBefore, Get} from "routing-controllers";
 // import { ContactValidation } from "./Contact.validation";
 import { Request, Response } from "express";
 import ORDER_SERVICE from "../services/user/order";
+import { OrderPayloadSchema } from "./User.validation";
 
 @Controller("/user")
 export class UserController{
@@ -30,7 +31,8 @@ export class UserController{
     @Post("/order")
     async book(@Req() req: Request, @Res() res: Response) {
         try {
-            let { status, data } = await new ORDER_SERVICE().createOrder(req?.body)
+            let body = OrderPayloadSchema.parse(req.body);
+            let { status, data } = await new ORDER_SERVICE().createOrder(body)
             return res
                 .status(status)
                 .json(data);
